@@ -1,209 +1,188 @@
 "use client"
 
-import { useState, useEffect, useRef, useCallback, forwardRef } from "react"
-import { Document, Page, pdfjs } from "react-pdf"
-import HTMLFlipBook from "react-pageflip"
-import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Maximize2, Loader2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-
-// Use CDN for PDF.js worker
-pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`
+import { useState, useEffect, useRef, useCallback } from "react"
+import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Loader2, RotateCw } from "lucide-react"
 
 interface FlipbookViewerProps {
   pdfUrl: string
 }
 
-interface PageProps {
-  pageNumber: number
-  width: number
-}
-
-// eslint-disable-next-line react/display-name
-const FlipPage = forwardRef<HTMLDivElement, PageProps>(({ pageNumber, width }, ref) => {
-  return (
-    <div ref={ref} className="bg-white shadow-lg overflow-hidden">
-      <Page
-        pageNumber={pageNumber}
-        width={width}
-        renderTextLayer={false}
-        renderAnnotationLayer={false}
-        loading={
-          <div className="flex items-center justify-center" style={{ width, height: width * 1.41 }}>
-            <Loader2 className="w-8 h-8 text-amber-500 animate-spin" />
-          </div>
-        }
-      />
-    </div>
-  )
-})
+const PDFJS_CDN = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"
+const PDFJS_WORKER = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"
 
 export default function FlipbookViewer({ pdfUrl }: FlipbookViewerProps) {
-  const [numPages, setNumPages] = useState<number>(0)
+  const [numPages, setNumPages] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
-  const [pageWidth, setPageWidth] = useState(450)
-  const [isLoading, setIsLoading] = useState(true)
-  const flipBookRef = useRef<any>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
+  const [scale, setScale] = useState(1.2)
+  const [status, setStatus] = useState<"loading" | "ready" | "error">("loading")
+  const [errorMsg, setErrorMsg] = useState("")
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const pdfRef = useRef<any>(null)
+  const renderTaskRef = useRef<any>(null)
 
-  // Calculate responsive page size
+  // Load PDF.js from CDN
   useEffect(() => {
-    const updateSize = () => {
-      if (!containerRef.current) return
-      const containerWidth = containerRef.current.offsetWidth
-      const containerHeight = window.innerHeight - 200
-
-      // For two-page spread, each page should be half the container width
-      // Maintain A4 ratio (1:1.41)
-      let calculatedWidth = Math.min(containerWidth / 2 - 20, 600)
-
-      // Make sure height fits in viewport
-      const calculatedHeight = calculatedWidth * 1.41
-      if (calculatedHeight > containerHeight) {
-        calculatedWidth = containerHeight / 1.41
-      }
-
-      // On mobile, use single page
-      if (containerWidth < 768) {
-        calculatedWidth = Math.min(containerWidth - 40, 400)
-      }
-
-      setPageWidth(Math.floor(calculatedWidth))
+    if ((window as any).pdfjsLib) {
+      initPdf()
+      return
     }
-
-    updateSize()
-    window.addEventListener("resize", updateSize)
-    return () => window.removeEventListener("resize", updateSize)
+    const script = document.createElement("script")
+    script.src = PDFJS_CDN
+    script.onload = () => {
+      ;(window as any).pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER
+      initPdf()
+    }
+    script.onerror = () => {
+      setStatus("error")
+      setErrorMsg("PDF.js yüklenemedi")
+    }
+    document.head.appendChild(script)
   }, [])
 
-  const onDocumentLoadSuccess = useCallback(({ numPages }: { numPages: number }) => {
-    setNumPages(numPages)
-    setIsLoading(false)
+  const initPdf = useCallback(async () => {
+    try {
+      setStatus("loading")
+      const pdfjsLib = (window as any).pdfjsLib
+      const pdf = await pdfjsLib.getDocument(pdfUrl).promise
+      pdfRef.current = pdf
+      setNumPages(pdf.numPages)
+      setStatus("ready")
+    } catch (e: any) {
+      setStatus("error")
+      setErrorMsg(e?.message || "PDF açılamadı")
+    }
+  }, [pdfUrl])
+
+  const renderPage = useCallback(async (pageNum: number, sc: number) => {
+    if (!pdfRef.current || !canvasRef.current) return
+    try {
+      // Cancel previous render
+      if (renderTaskRef.current) {
+        renderTaskRef.current.cancel()
+      }
+      const page = await pdfRef.current.getPage(pageNum)
+      const viewport = page.getViewport({ scale: sc })
+      const canvas = canvasRef.current
+      const ctx = canvas.getContext("2d")!
+      canvas.height = viewport.height
+      canvas.width = viewport.width
+
+      const renderContext = { canvasContext: ctx, viewport }
+      const renderTask = page.render(renderContext)
+      renderTaskRef.current = renderTask
+      await renderTask.promise
+    } catch (e: any) {
+      if (e?.name !== "RenderingCancelledException") {
+        console.error("[v0] Render error:", e)
+      }
+    }
   }, [])
 
-  const onFlip = useCallback((e: any) => {
-    setCurrentPage(e.data + 1)
-  }, [])
+  useEffect(() => {
+    if (status === "ready") {
+      renderPage(currentPage, scale)
+    }
+  }, [status, currentPage, scale, renderPage])
 
-  const goToPrevPage = () => {
-    flipBookRef.current?.pageFlip()?.flipPrev()
+  const goNext = () => {
+    if (currentPage < numPages) setCurrentPage((p) => p + 1)
   }
-
-  const goToNextPage = () => {
-    flipBookRef.current?.pageFlip()?.flipNext()
+  const goPrev = () => {
+    if (currentPage > 1) setCurrentPage((p) => p - 1)
   }
-
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768
+  const zoomIn = () => setScale((s) => Math.min(s + 0.2, 3))
+  const zoomOut = () => setScale((s) => Math.max(s - 0.2, 0.5))
 
   return (
-    <div ref={containerRef} className="w-full flex flex-col items-center">
-      <Document
-        file={pdfUrl}
-        onLoadSuccess={onDocumentLoadSuccess}
-        loading={
-          <div className="flex flex-col items-center justify-center p-20">
+    <div className="flex flex-col items-center w-full max-w-5xl">
+      {/* Toolbar */}
+      <div className="flex items-center gap-3 mb-4 bg-[#16213e] border border-white/10 rounded-xl px-4 py-2 shadow-lg">
+        <button
+          onClick={goPrev}
+          disabled={currentPage <= 1}
+          className="text-white disabled:opacity-30 hover:text-amber-400 transition-colors p-1"
+        >
+          <ChevronLeft size={24} />
+        </button>
+
+        <span className="text-gray-300 text-sm min-w-[80px] text-center">
+          {status === "ready" ? `${currentPage} / ${numPages}` : "—"}
+        </span>
+
+        <button
+          onClick={goNext}
+          disabled={currentPage >= numPages}
+          className="text-white disabled:opacity-30 hover:text-amber-400 transition-colors p-1"
+        >
+          <ChevronRight size={24} />
+        </button>
+
+        <div className="w-px h-6 bg-white/20 mx-1" />
+
+        <button onClick={zoomOut} className="text-white hover:text-amber-400 transition-colors p-1">
+          <ZoomOut size={20} />
+        </button>
+        <span className="text-gray-400 text-xs w-10 text-center">{Math.round(scale * 100)}%</span>
+        <button onClick={zoomIn} className="text-white hover:text-amber-400 transition-colors p-1">
+          <ZoomIn size={20} />
+        </button>
+
+        <div className="w-px h-6 bg-white/20 mx-1" />
+
+        <button onClick={initPdf} className="text-white hover:text-amber-400 transition-colors p-1" title="Yenile">
+          <RotateCw size={18} />
+        </button>
+      </div>
+
+      {/* Canvas Area */}
+      <div className="relative bg-[#111827] rounded-xl shadow-2xl overflow-auto max-h-[calc(100vh-220px)] max-w-full border border-white/10">
+        {status === "loading" && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center min-h-[500px] min-w-[360px]">
             <Loader2 className="w-12 h-12 text-amber-500 animate-spin mb-4" />
             <p className="text-gray-300">Dergi yükleniyor...</p>
           </div>
-        }
-        error={
-          <div className="text-center p-20">
-            <p className="text-red-400 mb-2">PDF yüklenemedi</p>
-            <p className="text-gray-400 text-sm">Lütfen sayfayı yenileyin</p>
-          </div>
-        }
-      >
-        {numPages > 0 && (
-          <>
-            {/* Flipbook */}
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <Button
-                onClick={goToPrevPage}
-                variant="ghost"
-                size="icon"
-                className="text-white hover:bg-white/10 hidden md:flex"
-                disabled={currentPage <= 1}
-              >
-                <ChevronLeft size={32} />
-              </Button>
-
-              <div className="shadow-2xl">
-                {/* @ts-ignore */}
-                <HTMLFlipBook
-                  ref={flipBookRef}
-                  width={pageWidth}
-                  height={pageWidth * 1.41}
-                  size="fixed"
-                  minWidth={300}
-                  maxWidth={1000}
-                  minHeight={400}
-                  maxHeight={1500}
-                  drawShadow={true}
-                  flippingTime={800}
-                  usePortrait={isMobile}
-                  startZIndex={0}
-                  autoSize={false}
-                  maxShadowOpacity={0.5}
-                  showCover={true}
-                  mobileScrollSupport={true}
-                  swipeDistance={30}
-                  clickEventForward={true}
-                  useMouseEvents={true}
-                  renderOnlyPageLengthChange={false}
-                  showPageCorners={true}
-                  disableFlipByClick={false}
-                  className="flipbook"
-                  style={{}}
-                  startPage={0}
-                  onFlip={onFlip}
-                >
-                  {Array.from({ length: numPages }, (_, i) => (
-                    <FlipPage key={i} pageNumber={i + 1} width={pageWidth} />
-                  ))}
-                </HTMLFlipBook>
-              </div>
-
-              <Button
-                onClick={goToNextPage}
-                variant="ghost"
-                size="icon"
-                className="text-white hover:bg-white/10 hidden md:flex"
-                disabled={currentPage >= numPages}
-              >
-                <ChevronRight size={32} />
-              </Button>
-            </div>
-
-            {/* Mobile Controls */}
-            <div className="flex md:hidden items-center justify-center gap-2 mb-4">
-              <Button
-                onClick={goToPrevPage}
-                variant="outline"
-                size="sm"
-                className="text-white border-white/20 hover:bg-white/10 bg-transparent"
-                disabled={currentPage <= 1}
-              >
-                <ChevronLeft size={20} />
-              </Button>
-              <Button
-                onClick={goToNextPage}
-                variant="outline"
-                size="sm"
-                className="text-white border-white/20 hover:bg-white/10 bg-transparent"
-                disabled={currentPage >= numPages}
-              >
-                <ChevronRight size={20} />
-              </Button>
-            </div>
-
-            {/* Page Indicator */}
-            <div className="text-center text-gray-300 text-sm">
-              <span className="font-medium">{currentPage}</span>
-              <span className="mx-2 text-gray-500">/</span>
-              <span>{numPages}</span>
-            </div>
-          </>
         )}
-      </Document>
+        {status === "error" && (
+          <div className="flex flex-col items-center justify-center min-h-[500px] min-w-[360px] p-8">
+            <p className="text-red-400 mb-2 font-medium">PDF yüklenemedi</p>
+            <p className="text-gray-400 text-sm mb-4">{errorMsg}</p>
+            <button
+              onClick={initPdf}
+              className="flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition-colors"
+            >
+              <RotateCw size={16} />
+              Tekrar Dene
+            </button>
+          </div>
+        )}
+        <canvas
+          ref={canvasRef}
+          className={status === "ready" ? "block" : "hidden"}
+          style={{ display: status === "ready" ? "block" : "none" }}
+        />
+      </div>
+
+      {/* Page Jump Buttons (bottom) */}
+      {status === "ready" && numPages > 0 && (
+        <div className="flex items-center gap-2 mt-4">
+          <button
+            onClick={goPrev}
+            disabled={currentPage <= 1}
+            className="flex items-center gap-1 bg-amber-700/80 hover:bg-amber-600 text-white disabled:opacity-30 px-4 py-2 rounded-lg text-sm transition-colors"
+          >
+            <ChevronLeft size={16} />
+            Önceki Sayfa
+          </button>
+          <button
+            onClick={goNext}
+            disabled={currentPage >= numPages}
+            className="flex items-center gap-1 bg-amber-700/80 hover:bg-amber-600 text-white disabled:opacity-30 px-4 py-2 rounded-lg text-sm transition-colors"
+          >
+            Sonraki Sayfa
+            <ChevronRight size={16} />
+          </button>
+        </div>
+      )}
     </div>
   )
 }
