@@ -71,8 +71,8 @@ export default function EbookViewer() {
         </div>
       </header>
 
-      {/* PDF Viewer */}
-      <main className="flex-1 flex items-start justify-center p-4 md:p-8">
+      {/* PDF Viewer — full remaining height, no scroll on page level */}
+      <main className="flex-1 flex flex-col overflow-hidden px-4 pb-4">
         <FlipbookViewer pdfUrl={magazine.pdfUrl} />
       </main>
     </div>
