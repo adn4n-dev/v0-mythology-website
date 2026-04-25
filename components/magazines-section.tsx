@@ -1,12 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
-import { ChevronRight, Upload, Trash2, Eye } from 'lucide-react'
+import { ChevronRight, Eye } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 
 interface Magazine {
   id: string
@@ -20,25 +17,9 @@ interface Magazine {
 
 export default function MagazinesSection() {
   const [magazines, setMagazines] = useState<Magazine[]>([])
-  const [isAdmin, setIsAdmin] = useState(false)
-  const [showUploadForm, setShowUploadForm] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const [uploading, setUploading] = useState(false)
-  const [successMessage, setSuccessMessage] = useState('')
-
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    issue_number: '',
-    file: null as File | null,
-  })
 
   useEffect(() => {
-    // Check if admin is logged in
-    const isAdminLoggedIn = localStorage.getItem('admin_token') === 'verified'
-    setIsAdmin(isAdminLoggedIn)
-
-    // Fetch magazines
     const fetchMagazines = async () => {
       try {
         const response = await fetch('/api/magazines')
@@ -55,76 +36,6 @@ export default function MagazinesSection() {
 
     fetchMagazines()
   }, [])
-
-  const handleUpload = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!formData.file || !formData.title) return
-
-    setUploading(true)
-    try {
-      // Upload PDF to Blob
-      const formDataBlob = new FormData()
-      formDataBlob.append('file', formData.file)
-      formDataBlob.append('title', formData.title)
-
-      const uploadResponse = await fetch('/api/upload/pdf', {
-        method: 'POST',
-        body: formDataBlob,
-      })
-
-      if (!uploadResponse.ok) throw new Error('PDF upload failed')
-
-      const uploadData = await uploadResponse.json()
-
-      // Save magazine metadata to Supabase
-      const magazineResponse = await fetch('/api/magazines', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: formData.title,
-          description: formData.description,
-          pdf_url: uploadData.url,
-          issue_number: formData.issue_number ? parseInt(formData.issue_number) : null,
-          is_published: true,
-        }),
-      })
-
-      if (!magazineResponse.ok) throw new Error('Magazine creation failed')
-
-      const newMagazine = await magazineResponse.json()
-      setMagazines([newMagazine, ...magazines])
-      setSuccessMessage('Dergi başarıyla yüklendi!')
-      setTimeout(() => setSuccessMessage(''), 3000)
-
-      // Reset form
-      setFormData({ title: '', description: '', issue_number: '', file: null })
-      setShowUploadForm(false)
-    } catch (error) {
-      console.error('[v0] Upload error:', error)
-      alert('Upload başarısız')
-    } finally {
-      setUploading(false)
-    }
-  }
-
-  const handleDelete = async (id: string) => {
-    if (!confirm('Bu dergiyi silmek istediğinizden emin misiniz?')) return
-
-    try {
-      const response = await fetch(`/api/magazines/${id}`, {
-        method: 'DELETE',
-      })
-
-      if (response.ok) {
-        setMagazines(magazines.filter((m) => m.id !== id))
-        setSuccessMessage('Dergi silindi!')
-        setTimeout(() => setSuccessMessage(''), 3000)
-      }
-    } catch (error) {
-      console.error('[v0] Delete error:', error)
-      alert('Silme başarısız')
-    }
-  }
 
   return (
     <section className="py-20 px-4 bg-background">
@@ -143,79 +54,6 @@ export default function MagazinesSection() {
           </h2>
           <p className="text-muted-foreground mt-2">Tüm sayıları çevrimiçi olarak okuyun</p>
         </div>
-
-        {/* Success Message */}
-        {successMessage && (
-          <div className="mb-6 bg-green-50 border border-green-200 text-green-800 p-4 rounded-lg">
-            {successMessage}
-          </div>
-        )}
-
-        {/* Admin Upload Section */}
-        {isAdmin && (
-          <div className="mb-8 bg-card rounded-lg p-6 border border-primary/30">
-            {!showUploadForm ? (
-              <Button
-                onClick={() => setShowUploadForm(true)}
-                className="bg-primary hover:bg-primary/90"
-              >
-                <Upload size={18} className="mr-2" />
-                Yeni Dergi Yükle
-              </Button>
-            ) : (
-              <form onSubmit={handleUpload} className="space-y-4">
-                <Input
-                  type="text"
-                  placeholder="Dergi Başlığı"
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  required
-                />
-                <Textarea
-                  placeholder="Dergi Açıklaması (opsiyonel)"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                />
-                <Input
-                  type="number"
-                  placeholder="Sayı Numarası (opsiyonel)"
-                  value={formData.issue_number}
-                  onChange={(e) => setFormData({ ...formData, issue_number: e.target.value })}
-                />
-                <div>
-                  <input
-                    type="file"
-                    accept=".pdf"
-                    onChange={(e) => setFormData({ ...formData, file: e.target.files?.[0] || null })}
-                    required
-                    className="block w-full text-sm text-muted-foreground
-                      file:mr-4 file:py-2 file:px-4
-                      file:rounded-md file:border-0
-                      file:text-sm file:font-semibold
-                      file:bg-primary file:text-primary-foreground
-                      hover:file:bg-primary/90"
-                  />
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    type="submit"
-                    disabled={uploading}
-                    className="bg-primary hover:bg-primary/90"
-                  >
-                    {uploading ? 'Yükleniyor...' : 'Yükle'}
-                  </Button>
-                  <Button
-                    type="button"
-                    onClick={() => setShowUploadForm(false)}
-                    variant="outline"
-                  >
-                    İptal
-                  </Button>
-                </div>
-              </form>
-            )}
-          </div>
-        )}
 
         {/* Magazines Grid */}
         {isLoading ? (
@@ -254,29 +92,16 @@ export default function MagazinesSection() {
                     </p>
                   )}
 
-                  <div className="flex gap-2">
-                    <Link
-                      href={magazine.pdf_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1"
-                    >
-                      <Button className="w-full bg-primary hover:bg-primary/90 text-white">
-                        <Eye size={16} className="mr-2" />
-                        Oku
-                      </Button>
-                    </Link>
-
-                    {isAdmin && (
-                      <Button
-                        onClick={() => handleDelete(magazine.id)}
-                        variant="outline"
-                        className="px-3"
-                      >
-                        <Trash2 size={16} />
-                      </Button>
-                    )}
-                  </div>
+                  <Link
+                    href={magazine.pdf_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button className="w-full bg-primary hover:bg-primary/90 text-white">
+                      <Eye size={16} className="mr-2" />
+                      Oku
+                    </Button>
+                  </Link>
                 </div>
               </div>
             ))}
