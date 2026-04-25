@@ -17,36 +17,18 @@ const magazines = [
 ]
 
 export default function EbookSection() {
-  return (
-    <section className="py-20 px-4 bg-background">
-      <div className="container mx-auto max-w-6xl">
-        {/* Section Header */}
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <div className="h-px w-20 bg-primary/30" />
-            <BookOpen className="w-6 h-6 text-primary" />
-            <div className="h-px w-20 bg-primary/30" />
-          </div>
-          <div className="inline-flex items-center gap-2 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-3">
-            <span className="w-2 h-2 rounded-full bg-white animate-pulse inline-block" />
-            Yeni Sayı
-          </div>
-          <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-            E-Kitap / Dergi
-          </h2>
-          <p className="text-muted-foreground mt-2">Anka Dergi sayılarını çevrimiçi okuyun</p>
-        </div>
+  const latest = magazines[0]
 
-        {/* Magazines Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {magazines.map((magazine) => (
-            <div
-              key={magazine.id}
-              className="group bg-card rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 border border-border"
-            >
+  return (
+    <section className="min-h-[calc(100vh-72px)] flex items-center bg-background px-4 py-12">
+      <div className="container mx-auto max-w-5xl">
+        <div className="flex flex-col md:flex-row items-center gap-12">
+
+          {/* Magazine Cover */}
+          <div className="w-full md:w-auto flex-shrink-0">
+            <div className="relative w-72 mx-auto md:mx-0 rounded-2xl overflow-hidden shadow-2xl border border-border">
               {/* Cover */}
-              <div className="relative h-72 bg-emerald-900 flex flex-col items-center justify-center p-6">
-                {/* Decorative Pattern */}
+              <div className="h-96 bg-emerald-900 flex flex-col items-center justify-center p-8">
                 <div className="absolute inset-0 opacity-10">
                   <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
                     <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
@@ -55,42 +37,47 @@ export default function EbookSection() {
                     <rect width="100" height="100" fill="url(#grid)" />
                   </svg>
                 </div>
-                
-                {/* Phoenix Logo */}
-                <div className="relative z-10 mb-4">
-                  <svg className="w-20 h-20 text-amber-400" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C10.5 4 9 5.5 9 8c0 1.5.5 3 2 4-1.5-1-3-1-4 0-1 1-1 3 0 4 1 1 3 1 4 0-.5 1.5 0 3 1 4s3 1 4 0c1-1 1.5-2.5 1-4 1 1 3 1 4 0s1-3 0-4c-1-1-2.5-1-4 0 1.5-1 2-2.5 2-4 0-2.5-1.5-4-3-6-1 2-2 3-3 3s-2-1-3-3z"/>
-                  </svg>
+                <svg className="relative z-10 w-24 h-24 text-amber-400 mb-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C10.5 4 9 5.5 9 8c0 1.5.5 3 2 4-1.5-1-3-1-4 0-1 1-1 3 0 4 1 1 3 1 4 0-.5 1.5 0 3 1 4s3 1 4 0c1-1 1.5-2.5 1-4 1 1 3 1 4 0s1-3 0-4c-1-1-2.5-1-4 0 1.5-1 2-2.5 2-4 0-2.5-1.5-4-3-6-1 2-2 3-3 3s-2-1-3-3z"/>
+                </svg>
+                <h3 className="relative z-10 text-white font-serif text-2xl font-bold text-center">{latest.title}</h3>
+                <p className="relative z-10 text-amber-300 text-sm mt-1 text-center">{latest.subtitle}</p>
+                <div className="relative z-10 mt-4 px-4 py-1 bg-white/20 rounded-full">
+                  <span className="text-white text-sm font-medium">Sayı {latest.issueNumber}</span>
                 </div>
-                
-                <h3 className="relative z-10 text-white font-serif text-2xl font-bold text-center">
-                  {magazine.title}
-                </h3>
-                <p className="relative z-10 text-amber-300 text-sm mt-1">
-                  {magazine.subtitle}
-                </p>
-                <div className="relative z-10 mt-3 px-4 py-1 bg-white/20 rounded-full">
-                  <span className="text-white text-sm font-medium">
-                    Sayı {magazine.issueNumber}
-                  </span>
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="p-6">
-                <p className="text-muted-foreground text-sm mb-6 line-clamp-3">
-                  {magazine.description}
-                </p>
-
-                <Link href={`/ebook/${magazine.slug}`}>
-                  <Button className="w-full bg-primary hover:bg-primary/90 text-white group-hover:scale-105 transition-transform">
-                    <Eye size={18} className="mr-2" />
-                    Şimdi Oku
-                  </Button>
-                </Link>
               </div>
             </div>
-          ))}
+          </div>
+
+          {/* Info */}
+          <div className="flex-1 text-center md:text-left">
+            <div className="inline-flex items-center gap-2 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-5">
+              <span className="w-2 h-2 rounded-full bg-white animate-pulse inline-block" />
+              Yeni Sayı
+            </div>
+            <h1 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4 text-balance">
+              {latest.title}
+            </h1>
+            <p className="text-primary font-medium text-lg mb-4">{latest.subtitle} — Sayı {latest.issueNumber}</p>
+            <p className="text-muted-foreground leading-relaxed mb-8 max-w-lg">
+              {latest.description}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
+              <Link href={`/ebook/${latest.slug}`}>
+                <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-8">
+                  <Eye size={20} className="mr-2" />
+                  Hemen Oku
+                </Button>
+              </Link>
+              <Link href="/magazines">
+                <Button size="lg" variant="outline" className="px-8">
+                  <BookOpen size={20} className="mr-2" />
+                  Tüm Sayılar
+                </Button>
+              </Link>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
