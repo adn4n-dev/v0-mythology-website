@@ -18,15 +18,15 @@ const footerLinks = {
 
 export function Footer() {
   return (
-    <footer className="bg-gradient-to-b from-secondary/30 to-background border-t border-border/50">
+    <footer className="bg-background border-t border-border/50">
       <div className="container mx-auto max-w-6xl px-4 py-16">
         {/* Decorative Divider */}
         <div className="flex items-center justify-center gap-4 mb-12">
-          <div className="h-px w-20 bg-gradient-to-r from-transparent to-primary/50" />
+          <div className="h-px w-20 bg-primary/30" />
           <svg className="w-8 h-8 text-primary" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 2L15 8L22 9L17 14L18 21L12 18L6 21L7 14L2 9L9 8L12 2Z" />
           </svg>
-          <div className="h-px w-20 bg-gradient-to-l from-transparent to-primary/50" />
+          <div className="h-px w-20 bg-primary/30" />
         </div>
 
         {/* Footer Content */}

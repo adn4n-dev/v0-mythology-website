@@ -41,7 +41,7 @@ export function Header() {
           {/* CTA Button */}
           <Link
             href="/kesif"
-            className="hidden md:inline-flex items-center gap-2 bg-gradient-to-r from-primary to-accent text-primary-foreground px-6 py-2 rounded-full font-medium text-sm shadow-lg hover:shadow-xl transition-all hover:scale-105"
+            className="hidden md:inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-2 rounded-full font-medium text-sm shadow-lg hover:shadow-xl transition-all hover:scale-105"
           >
             Keşfe Başlayın
           </Link>
@@ -72,7 +72,7 @@ export function Header() {
               ))}
               <Link
                 href="/kesif"
-                className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-accent text-primary-foreground px-6 py-2 rounded-full font-medium text-sm shadow-lg"
+                className="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-6 py-2 rounded-full font-medium text-sm shadow-lg"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Keşfe Başlayın

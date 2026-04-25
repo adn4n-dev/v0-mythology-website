@@ -12,20 +12,20 @@ const magazines = [
     subtitle: 'Felsefe Dergisi',
     issueNumber: 1,
     description: 'Varoluş, Türk mitolojisi, Çanakkale ruhu ve felsefenin derinliklerine yolculuk. Bu sayıda: İstiklal Marşı, Atatürk\'ün Gençliğe Hitabesi, 57. Alay, Fermi Paradoksu ve daha fazlası.',
-    coverColor: 'from-emerald-800 to-emerald-950',
+
   },
 ]
 
 export default function EbookSection() {
   return (
-    <section className="py-20 px-4 bg-gradient-to-b from-secondary/30 to-background">
+    <section className="py-20 px-4 bg-background">
       <div className="container mx-auto max-w-6xl">
         {/* Section Header */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-4 mb-4">
-            <div className="h-px w-20 bg-gradient-to-r from-transparent to-primary/50" />
+            <div className="h-px w-20 bg-primary/30" />
             <BookOpen className="w-6 h-6 text-primary" />
-            <div className="h-px w-20 bg-gradient-to-l from-transparent to-primary/50" />
+            <div className="h-px w-20 bg-primary/30" />
           </div>
           <div className="inline-flex items-center gap-2 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-3">
             <span className="w-2 h-2 rounded-full bg-white animate-pulse inline-block" />
@@ -45,7 +45,7 @@ export default function EbookSection() {
               className="group bg-card rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 border border-border"
             >
               {/* Cover */}
-              <div className={`relative h-72 bg-gradient-to-br ${magazine.coverColor} flex flex-col items-center justify-center p-6`}>
+              <div className="relative h-72 bg-emerald-900 flex flex-col items-center justify-center p-6">
                 {/* Decorative Pattern */}
                 <div className="absolute inset-0 opacity-10">
                   <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">

@@ -58,7 +58,7 @@ export function FeaturedArticle() {
         <div className="bg-card rounded-3xl overflow-hidden shadow-2xl border border-border/50">
           <div className="grid md:grid-cols-2 gap-0">
             {/* Image */}
-            <div className="relative h-64 md:h-auto min-h-[300px] bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+            <div className="relative h-64 md:h-auto min-h-[300px] bg-secondary/40 flex items-center justify-center">
               {article.image_url ? (
                 <Image
                   src={article.image_url}
@@ -69,7 +69,6 @@ export function FeaturedArticle() {
               ) : (
                 <span className="text-6xl opacity-30">📖</span>
               )}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-card/20 md:bg-gradient-to-l md:from-card md:via-transparent md:to-transparent" />
             </div>
 
             {/* Content */}
@@ -85,7 +84,7 @@ export function FeaturedArticle() {
               </p>
               <Link
                 href={`/articles/${article.slug}`}
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-accent text-primary-foreground px-6 py-3 rounded-full font-medium shadow-lg hover:shadow-xl transition-all hover:scale-105 w-fit"
+                className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-full font-medium shadow-lg hover:shadow-xl transition-all hover:scale-105 w-fit"
               >
                 Devamını Oku
                 <ChevronRight size={18} />
