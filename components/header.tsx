@@ -8,6 +8,7 @@ import { useState } from "react"
 const navItems = [
   { label: "Ana Sayfa", href: "/" },
   { label: "Yazılar", href: "/yazilar" },
+  { label: "E-Kitap", href: "/magazines" },
   { label: "Mitoloji", href: "/mitoloji" },
   { label: "Kültür", href: "/kultur" },
   { label: "Hakkımızda", href: "/hakkimizda" },

@@ -2,6 +2,7 @@ import { Header } from "@/components/header"
 import { Hero } from "@/components/hero"
 import { PopularArticles } from "@/components/popular-articles"
 import { FeaturedArticle } from "@/components/featured-article"
+import MagazinesSection from "@/components/magazines-section"
 import { Footer } from "@/components/footer"
 
 export default function Home() {
@@ -11,6 +12,7 @@ export default function Home() {
       <Hero />
       <PopularArticles />
       <FeaturedArticle />
+      <MagazinesSection />
       <Footer />
     </main>
   )
