@@ -2,9 +2,19 @@
 
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Download, ZoomIn, ZoomOut, ChevronLeft, ChevronRight } from 'lucide-react'
+import dynamic from 'next/dynamic'
+import { ArrowLeft, Download, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useState, useEffect } from 'react'
+
+const PDFViewer = dynamic(() => import('@/components/pdf-viewer'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex flex-col items-center justify-center p-20">
+      <Loader2 className="w-12 h-12 text-amber-500 animate-spin mb-4" />
+      <p className="text-gray-300">Okuyucu hazırlanıyor...</p>
+    </div>
+  ),
+})
 
 const magazines: Record<string, { title: string; pdfUrl: string; issueNumber: number }> = {
   'sayi-1': {
@@ -18,15 +28,6 @@ export default function EbookViewer() {
   const params = useParams()
   const slug = params.slug as string
   const magazine = magazines[slug]
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(0)
-  const [scale, setScale] = useState(1)
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    // PDF.js will be loaded via iframe
-    setIsLoading(false)
-  }, [])
 
   if (!magazine) {
     return (
@@ -44,7 +45,7 @@ export default function EbookViewer() {
   return (
     <div className="min-h-screen bg-[#1a1a2e] flex flex-col">
       {/* Header */}
-      <header className="bg-[#16213e] border-b border-[#0f3460] px-4 py-3">
+      <header className="bg-[#16213e] border-b border-[#0f3460] px-4 py-3 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/">
@@ -53,7 +54,7 @@ export default function EbookViewer() {
                 Geri
               </Button>
             </Link>
-            <div>
+            <div className="hidden sm:block">
               <h1 className="text-white font-serif text-lg">{magazine.title}</h1>
               <p className="text-gray-400 text-sm">Sayı {magazine.issueNumber}</p>
             </div>
@@ -63,7 +64,7 @@ export default function EbookViewer() {
             <a href={magazine.pdfUrl} download>
               <Button variant="ghost" size="sm" className="text-white hover:bg-white/10">
                 <Download size={18} className="mr-2" />
-                İndir
+                <span className="hidden sm:inline">İndir</span>
               </Button>
             </a>
           </div>
@@ -71,14 +72,8 @@ export default function EbookViewer() {
       </header>
 
       {/* PDF Viewer */}
-      <main className="flex-1 flex items-center justify-center p-4">
-        <div className="w-full max-w-5xl h-[calc(100vh-120px)] bg-white rounded-lg shadow-2xl overflow-hidden">
-          <iframe
-            src={`${magazine.pdfUrl}#toolbar=0&navpanes=0&scrollbar=1`}
-            className="w-full h-full"
-            title={magazine.title}
-          />
-        </div>
+      <main className="flex-1 flex items-start justify-center p-4 md:p-8">
+        <PDFViewer pdfUrl={magazine.pdfUrl} />
       </main>
     </div>
   )
