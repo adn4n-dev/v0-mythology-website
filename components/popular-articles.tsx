@@ -1,9 +1,8 @@
-'use client'
-
-import { useEffect, useState } from 'react'
-import Image from "next/image"
-import Link from "next/link"
-import { ChevronRight } from "lucide-react"
+'use client';
+import { useEffect, useState } from 'react';
+import Image from "next/image";
+import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 
 interface Article {
   id: string

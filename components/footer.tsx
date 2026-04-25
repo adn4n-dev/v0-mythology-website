@@ -1,5 +1,5 @@
-import Image from "next/image"
-import Link from "next/link"
+import Image from "next/image";
+import Link from "next/link";
 
 const footerLinks = {
   yazilar: [
@@ -57,13 +57,13 @@ export function Footer() {
               Yazılar
             </h4>
             <ul className="space-y-2">
-              {footerLinks.yazilar.map((link) => (
-                <li key={link.href}>
+              {footerLinks?.yazilar?.map((link) => (
+                <li key={link?.href}>
                   <Link
-                    href={link.href}
+                    href={link?.href}
                     className="text-muted-foreground hover:text-primary transition-colors text-sm"
                   >
-                    {link.label}
+                    {link?.label}
                   </Link>
                 </li>
               ))}
@@ -76,13 +76,13 @@ export function Footer() {
               Kurumsal
             </h4>
             <ul className="space-y-2">
-              {footerLinks.kurumsal.map((link) => (
-                <li key={link.href}>
+              {footerLinks?.kurumsal?.map((link) => (
+                <li key={link?.href}>
                   <Link
-                    href={link.href}
+                    href={link?.href}
                     className="text-muted-foreground hover:text-primary transition-colors text-sm"
                   >
-                    {link.label}
+                    {link?.label}
                   </Link>
                 </li>
               ))}
@@ -93,10 +93,10 @@ export function Footer() {
         {/* Copyright */}
         <div className="mt-12 pt-8 border-t border-border/50 text-center">
           <p className="text-muted-foreground text-sm">
-            © {new Date().getFullYear()} Anka Dergi. Tüm hakları saklıdır.
+            © {new Date()?.getFullYear()} Anka Dergi. Tüm hakları saklıdır.
           </p>
         </div>
       </div>
     </footer>
-  )
+  );
 }

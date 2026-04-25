@@ -1,9 +1,16 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server';
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123'
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD
 
 export async function POST(request: NextRequest) {
   try {
+    if (!ADMIN_PASSWORD) {
+      return NextResponse.json(
+        { error: 'Admin şifresi yapılandırılmamış' },
+        { status: 500 }
+      )
+    }
+
     const { password } = await request.json()
 
     if (!password) {

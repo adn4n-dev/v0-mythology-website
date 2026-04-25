@@ -1,6 +1,6 @@
-import Image from "next/image"
-import Link from "next/link"
-import { ChevronRight } from "lucide-react"
+import Image from "next/image";
+import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 
 export function FeaturedArticle() {
   return (
