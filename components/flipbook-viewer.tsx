@@ -94,11 +94,18 @@ export default function FlipbookViewer({ pdfUrl }: FlipbookViewerProps) {
     try {
       if (renderTaskRef.current) renderTaskRef.current.cancel()
       const page = await pdfRef.current.getPage(pageNum)
-      const viewport = page.getViewport({ scale: sc })
+      const dpr = window.devicePixelRatio || 1
+      // Render at 2x minimum for sharpness, then scale down via CSS
+      const renderScale = sc * Math.max(dpr, 2)
+      const viewport = page.getViewport({ scale: renderScale })
       const canvas = canvasRef.current
       const ctx = canvas.getContext("2d")!
-      canvas.height = viewport.height
+      // Physical pixel size
       canvas.width = viewport.width
+      canvas.height = viewport.height
+      // CSS display size (what the user sees)
+      canvas.style.width = `${viewport.width / Math.max(dpr, 2)}px`
+      canvas.style.height = `${viewport.height / Math.max(dpr, 2)}px`
       const renderTask = page.render({ canvasContext: ctx, viewport })
       renderTaskRef.current = renderTask
       await renderTask.promise
