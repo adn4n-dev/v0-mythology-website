@@ -9,8 +9,8 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-background">
       <Header />
-      <Hero />
       <EbookSection />
+      <Hero />
       <PopularArticles />
       <FeaturedArticle />
       <Footer />
