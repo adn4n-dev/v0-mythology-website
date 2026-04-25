@@ -20,10 +20,11 @@ export async function GET(request: NextRequest) {
     const { data, error } = await query
 
     if (error) {
+      console.error('[v0] Supabase error:', error)
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    return NextResponse.json(data)
+    return NextResponse.json(data || [])
   } catch (error) {
     return NextResponse.json(
       { error: 'Makale yüklenemedi' },
