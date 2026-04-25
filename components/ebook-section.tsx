@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { BookOpen, Eye } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -26,27 +27,18 @@ export default function EbookSection() {
 
           {/* Magazine Cover */}
           <div className="w-full md:w-auto flex-shrink-0">
-            <div className="relative w-72 mx-auto md:mx-0 rounded-2xl overflow-hidden shadow-2xl border border-border">
-              {/* Cover */}
-              <div className="h-96 bg-emerald-900 flex flex-col items-center justify-center p-8">
-                <div className="absolute inset-0 opacity-10">
-                  <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                      <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" strokeWidth="0.5"/>
-                    </pattern>
-                    <rect width="100" height="100" fill="url(#grid)" />
-                  </svg>
-                </div>
-                <svg className="relative z-10 w-24 h-24 text-amber-400 mb-4" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C10.5 4 9 5.5 9 8c0 1.5.5 3 2 4-1.5-1-3-1-4 0-1 1-1 3 0 4 1 1 3 1 4 0-.5 1.5 0 3 1 4s3 1 4 0c1-1 1.5-2.5 1-4 1 1 3 1 4 0s1-3 0-4c-1-1-2.5-1-4 0 1.5-1 2-2.5 2-4 0-2.5-1.5-4-3-6-1 2-2 3-3 3s-2-1-3-3z"/>
-                </svg>
-                <h3 className="relative z-10 text-white font-serif text-2xl font-bold text-center">{latest.title}</h3>
-                <p className="relative z-10 text-amber-300 text-sm mt-1 text-center">{latest.subtitle}</p>
-                <div className="relative z-10 mt-4 px-4 py-1 bg-white/20 rounded-full">
-                  <span className="text-white text-sm font-medium">Sayı {latest.issueNumber}</span>
-                </div>
+            <Link href={`/ebook/${latest.slug}`}>
+              <div className="relative w-72 mx-auto md:mx-0 rounded-2xl overflow-hidden shadow-2xl border border-border hover:scale-[1.02] transition-transform duration-300 cursor-pointer">
+                <Image
+                  src="/magazines/anka-sayi-1-kapak.jpg"
+                  alt="ANKA Magazine Sayı 1 Kapak"
+                  width={288}
+                  height={408}
+                  className="w-full h-auto object-cover"
+                  priority
+                />
               </div>
-            </div>
+            </Link>
           </div>
 
           {/* Info */}
