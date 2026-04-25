@@ -1,9 +1,8 @@
-'use client'
-
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+'use client';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 export default function AdminLogin() {
   const [password, setPassword] = useState('')
@@ -74,11 +73,6 @@ export default function AdminLogin() {
               {isLoading ? 'Kontrol ediliyor...' : 'Giriş Yap'}
             </Button>
           </form>
-
-          <div className="mt-6 p-4 bg-muted rounded-md text-xs text-muted-foreground">
-            <p className="font-semibold mb-1">Demo Şifresi:</p>
-            <p>admin123</p>
-          </div>
         </div>
       </div>
     </div>

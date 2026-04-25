@@ -1,13 +1,13 @@
-"use client"
-
-import Link from "next/link"
-import Image from "next/image"
-import { Menu, X } from "lucide-react"
-import { useState } from "react"
+"use client";
+import Link from"next/link";
+ 
+import { Menu, X } from "lucide-react";
+import { useState } from "react";
 
 const navItems = [
   { label: "Ana Sayfa", href: "/" },
   { label: "Yazılar", href: "/yazilar" },
+  { label: "Dergiler", href: "/dergiler" },
   { label: "Mitoloji", href: "/mitoloji" },
   { label: "Kültür", href: "/kultur" },
   { label: "Hakkımızda", href: "/hakkimizda" },
