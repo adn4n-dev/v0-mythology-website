@@ -31,6 +31,7 @@ export default function AdminLogin() {
         setPassword('')
       }
     } catch (err) {
+      console.error('[v0] Login error:', err)
       setError('Bir hata oluştu')
     } finally {
       setIsLoading(false)
@@ -40,7 +41,7 @@ export default function AdminLogin() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="bg-card rounded-lg shadow-lg p-8">
+        <div className="bg-card rounded-lg shadow-lg p-8 border border-border">
           <h1 className="text-3xl font-serif text-center text-foreground mb-2">
             Anka Dergi
           </h1>
@@ -57,11 +58,12 @@ export default function AdminLogin() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Şifre girin"
                 disabled={isLoading}
+                autoComplete="current-password"
               />
             </div>
 
             {error && (
-              <div className="bg-red-50 text-red-700 p-3 rounded-md text-sm">
+              <div className="bg-red-50 text-red-700 p-3 rounded-md text-sm border border-red-200">
                 {error}
               </div>
             )}
@@ -74,11 +76,6 @@ export default function AdminLogin() {
               {isLoading ? 'Kontrol ediliyor...' : 'Giriş Yap'}
             </Button>
           </form>
-
-          <div className="mt-6 p-4 bg-muted rounded-md text-xs text-muted-foreground">
-            <p className="font-semibold mb-1">Demo Şifresi:</p>
-            <p>admin123</p>
-          </div>
         </div>
       </div>
     </div>

@@ -86,6 +86,14 @@ export function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link
+                  href="/admin"
+                  className="text-muted-foreground hover:text-primary transition-colors text-sm opacity-70"
+                >
+                  Admin Paneli
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

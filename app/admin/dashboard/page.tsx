@@ -25,6 +25,7 @@ export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [showForm, setShowForm] = useState(false)
+  const [successMessage, setSuccessMessage] = useState('')
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -46,12 +47,16 @@ export default function AdminDashboard() {
 
   const fetchArticles = async () => {
     try {
-      const response = await fetch('/api/articles/admin')
+      const response = await fetch('/api/articles/admin', {
+        headers: {
+          'x-admin-token': 'verified',
+        },
+      })
       if (!response.ok) throw new Error('Makale yüklenemedi')
       const data = await response.json()
       setArticles(data)
     } catch (error) {
-      console.error('Error:', error)
+      console.error('[v0] Error fetching articles:', error)
     } finally {
       setIsLoading(false)
     }
@@ -87,6 +92,9 @@ export default function AdminDashboard() {
 
       if (!response.ok) throw new Error('Kayıt başarısız')
 
+      setSuccessMessage(editingId ? 'Makale başarıyla güncellendi!' : 'Makale başarıyla eklendi!')
+      setTimeout(() => setSuccessMessage(''), 3000)
+      
       fetchArticles()
       setShowForm(false)
       setEditingId(null)
@@ -130,6 +138,10 @@ export default function AdminDashboard() {
       })
 
       if (!response.ok) throw new Error('Silme başarısız')
+      
+      setSuccessMessage('Makale başarıyla silindi!')
+      setTimeout(() => setSuccessMessage(''), 3000)
+      
       fetchArticles()
     } catch (error) {
       alert('Hata: ' + (error as Error).message)
@@ -168,6 +180,18 @@ export default function AdminDashboard() {
       </header>
 
       <main className="max-w-6xl mx-auto p-4">
+        {/* Success Message */}
+        {successMessage && (
+          <div className="mb-6 bg-green-50 border border-green-200 text-green-800 p-4 rounded-lg flex justify-between items-center">
+            <span>{successMessage}</span>
+            <button
+              onClick={() => setSuccessMessage('')}
+              className="text-green-800 hover:text-green-900"
+            >
+              ✕
+            </button>
+          </div>
+        )}
         {/* Add Article Button */}
         <div className="mb-6">
           {!showForm && (
