@@ -246,6 +246,8 @@ export default function AdminDashboard() {
       alert('Silme başarısız: ' + (error as Error).message)
     }
   }
+
+  const handleCancel = () => {
     setShowForm(false)
     setEditingId(null)
     setFormData({
