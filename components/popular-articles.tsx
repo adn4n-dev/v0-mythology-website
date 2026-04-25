@@ -34,16 +34,16 @@ export function PopularArticles() {
   }, [])
 
   return (
-    <section className="py-20 px-4 bg-gradient-to-b from-background to-secondary/30">
+    <section className="py-20 px-4 bg-background">
       <div className="container mx-auto max-w-6xl">
         {/* Section Header */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-4 mb-4">
-            <div className="h-px w-20 bg-gradient-to-r from-transparent to-primary/50" />
+            <div className="h-px w-20 bg-primary/30" />
             <svg className="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2L15 8L22 9L17 14L18 21L12 18L6 21L7 14L2 9L9 8L12 2Z" />
             </svg>
-            <div className="h-px w-20 bg-gradient-to-l from-transparent to-primary/50" />
+            <div className="h-px w-20 bg-primary/30" />
           </div>
           <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
             Popüler Yazılar
@@ -63,9 +63,8 @@ export function PopularArticles() {
                 className="group bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-border/50"
               >
                 {/* Image */}
-                <div className="relative h-48 overflow-hidden bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                <div className="relative h-48 overflow-hidden bg-secondary/40 flex items-center justify-center">
                   <span className="text-5xl opacity-30">📖</span>
-                  <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
                 </div>
 
                 {/* Content */}

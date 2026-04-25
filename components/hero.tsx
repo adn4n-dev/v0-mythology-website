@@ -14,7 +14,7 @@ export function Hero() {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/10 to-background" />
+        <div className="absolute inset-0 bg-background/40" />
       </div>
 
       {/* Decorative Columns */}
@@ -58,7 +58,7 @@ export function Hero() {
         {/* CTA Button */}
         <Link
           href="/yazilar"
-          className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-accent text-primary-foreground px-8 py-3 rounded-full font-medium text-lg shadow-xl hover:shadow-2xl transition-all hover:scale-105 border-2 border-primary/30"
+          className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3 rounded-full font-medium text-lg shadow-xl hover:shadow-2xl transition-all hover:scale-105 border-2 border-primary/30"
         >
           Yazıları Keşfet
           <ChevronRight size={20} />
@@ -66,11 +66,11 @@ export function Hero() {
 
         {/* Decorative Divider */}
         <div className="mt-16 flex items-center justify-center gap-4">
-          <div className="h-px w-16 bg-gradient-to-r from-transparent to-primary/50" />
-          <svg className="w-8 h-8 text-primary" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2L15 8L22 9L17 14L18 21L12 18L6 21L7 14L2 9L9 8L12 2Z" />
-          </svg>
-          <div className="h-px w-16 bg-gradient-to-l from-transparent to-primary/50" />
+          <div className="h-px w-16 bg-primary/30" />
+            <svg className="w-8 h-8 text-primary" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2L15 8L22 9L17 14L18 21L12 18L6 21L7 14L2 9L9 8L12 2Z" />
+            </svg>
+            <div className="h-px w-16 bg-primary/30" />
         </div>
       </div>
     </section>
