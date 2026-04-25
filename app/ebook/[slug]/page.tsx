@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic'
 import { ArrowLeft, Download, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-const PDFViewer = dynamic(() => import('@/components/pdf-viewer'), {
+const FlipbookViewer = dynamic(() => import('@/components/flipbook-viewer'), {
   ssr: false,
   loading: () => (
     <div className="flex flex-col items-center justify-center p-20">
@@ -73,7 +73,7 @@ export default function EbookViewer() {
 
       {/* PDF Viewer */}
       <main className="flex-1 flex items-start justify-center p-4 md:p-8">
-        <PDFViewer pdfUrl={magazine.pdfUrl} />
+        <FlipbookViewer pdfUrl={magazine.pdfUrl} />
       </main>
     </div>
   )
