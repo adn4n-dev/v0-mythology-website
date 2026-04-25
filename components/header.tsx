@@ -23,14 +23,14 @@ export function Header() {
         <nav className="flex items-center justify-between">
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6 flex-1 justify-center">
-            {navItems.map((item, index) => (
+            {navItems?.map((item, index) => (
               <Link
-                key={item.href}
-                href={item.href}
+                key={item?.href}
+                href={item?.href}
                 className="text-foreground/80 hover:text-foreground transition-colors font-medium text-sm tracking-wide"
               >
-                {item.label}
-                {index < navItems.length - 1 && (
+                {item?.label}
+                {index < navItems?.length - 1 && (
                   <span className="ml-6 text-primary/40">·</span>
                 )}
               </Link>
@@ -59,14 +59,14 @@ export function Header() {
         {isMenuOpen && (
           <div className="md:hidden absolute top-full left-0 right-0 bg-card/95 backdrop-blur-md border-b border-border p-4">
             <div className="flex flex-col gap-4">
-              {navItems.map((item) => (
+              {navItems?.map((item) => (
                 <Link
-                  key={item.href}
-                  href={item.href}
+                  key={item?.href}
+                  href={item?.href}
                   className="text-foreground/80 hover:text-foreground transition-colors font-medium"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {item.label}
+                  {item?.label}
                 </Link>
               ))}
               <Link
@@ -81,5 +81,5 @@ export function Header() {
         )}
       </div>
     </header>
-  )
+  );
 }
