@@ -27,6 +27,10 @@ export default function EbookSection() {
             <BookOpen className="w-6 h-6 text-primary" />
             <div className="h-px w-20 bg-gradient-to-l from-transparent to-primary/50" />
           </div>
+          <div className="inline-flex items-center gap-2 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-3">
+            <span className="w-2 h-2 rounded-full bg-white animate-pulse inline-block" />
+            Yeni Sayı
+          </div>
           <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
             E-Kitap / Dergi
           </h2>
