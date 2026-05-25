@@ -7,13 +7,22 @@ import { Button } from '@/components/ui/button'
 
 const magazines = [
   {
+    id: 2,
+    slug: 'sayi-2',
+    title: 'ANKA Magazine',
+    subtitle: 'Felsefe Dergisi',
+    issueNumber: 2,
+    description: 'Bu sayıda: 19 Mayıs ve Milli Mücadele, İstanbul\'un Fethi, Alman İmparatorluğu\'nun Kuruluşu, Homeros\'un Tanrıları ve daha fazlası. Estetik, sanat ve tarihin derinliklerine dalın.',
+    coverImage: '/magazines/anka-sayi-2-kapak.jpg',
+  },
+  {
     id: 1,
     slug: 'sayi-1',
     title: 'ANKA Magazine',
     subtitle: 'Felsefe Dergisi',
     issueNumber: 1,
     description: 'Varoluş, Türk mitolojisi, Çanakkale ruhu ve felsefenin derinliklerine yolculuk. Bu sayıda: İstiklal Marşı, Atatürk\'ün Gençliğe Hitabesi, 57. Alay, Fermi Paradoksu ve daha fazlası.',
-
+    coverImage: '/magazines/anka-sayi-1-kapak.jpg',
   },
 ]
 
@@ -30,8 +39,8 @@ export default function EbookSection() {
             <Link href={`/ebook/${latest.slug}`}>
               <div className="relative w-72 mx-auto md:mx-0 rounded-2xl overflow-hidden shadow-2xl border border-border hover:scale-[1.02] transition-transform duration-300 cursor-pointer">
                 <Image
-                  src="/magazines/anka-sayi-1-kapak.jpg"
-                  alt="ANKA Magazine Sayı 1 Kapak"
+                  src={latest.coverImage}
+                  alt={`ANKA Magazine Sayı ${latest.issueNumber} Kapak`}
                   width={288}
                   height={408}
                   className="w-full h-auto object-cover"

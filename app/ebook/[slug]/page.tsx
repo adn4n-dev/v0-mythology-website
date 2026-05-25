@@ -17,6 +17,11 @@ const FlipbookViewer = dynamic(() => import('@/components/flipbook-viewer'), {
 })
 
 const magazines: Record<string, { title: string; pdfUrl: string; issueNumber: number }> = {
+  'sayi-2': {
+    title: 'ANKA Magazine - Felsefe Dergisi',
+    pdfUrl: '/magazines/anka-sayi-2.pdf',
+    issueNumber: 2,
+  },
   'sayi-1': {
     title: 'ANKA Magazine - Felsefe Dergisi',
     pdfUrl: '/magazines/anka-sayi-1.pdf',
